@@ -26,7 +26,7 @@ public class DataDao {
 		List <AddressVO> addressVOList = new ArrayList<AddressVO>();
         try {
         ps = connection.prepareStatement("SELECT * FROM address  WHERE address1  LIKE ?");
-                ps.setString(1, frameWork + "%");
+                ps.setString(1, "%"+frameWork + "%");
                 System.out.println(frameWork);
                 System.out.println(ps.toString());
                 ResultSet rs = ps.executeQuery();

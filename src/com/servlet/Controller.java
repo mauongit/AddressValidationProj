@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cache.CacheManager;
 import com.cache.CacheTestManager;
+import com.cache.CachedObject;
 import com.dao.DataDao;
 import com.google.gson.Gson;
 import com.vo.AddressVO;
@@ -20,22 +22,28 @@ public class Controller extends HttpServlet {
 
         protected void doGet(HttpServletRequest request,
                 HttpServletResponse response) throws ServletException, IOException {
-
+        	CacheTestManager cacheManagerTestProgram1 = new  CacheTestManager();
                 response.setContentType("application/json");
                 try {
                         String term = request.getParameter("term");
-                        System.out.println("Data from ajax call " + term);
-
-                        DataDao dataDao = new DataDao();
-                        List <String> addressVOList = dataDao.getFrameWork(term);
-
-                        String searchList = new Gson().toJson(addressVOList);
-                        
-                        CacheTestManager cacheManagerTestProgram1 = new  CacheTestManager();
-                        System.out.println("begin caching");
-                        cacheManagerTestProgram1.getCacheObject(term,searchList);
-                        System.out.println("end caching");
-                        response.getWriter().write(searchList);
+                        System.out.println("doGet: Data from ajax call " + term);
+                        CachedObject cObject = cacheManagerTestProgram1.isTermCached(term);
+                        if(cObject == null){
+                        	System.out.println("doGet: cache null : Querying and  begin caching");
+                        	 DataDao dataDao = new DataDao();
+                             List <String> addressVOList = dataDao.getFrameWork(term);
+                             String searchList = new Gson().toJson(addressVOList);
+                             cacheManagerTestProgram1.getCacheObject(term,searchList);
+                             System.out.println("doGet: end caching");
+                             response.getWriter().write(searchList);
+                        }else{
+                        	/* Try to retrieve the object from the cache! */
+                        	CachedObject o = (CachedObject) CacheManager.getCache(term);
+                        	if(o != null){
+                        		response.getWriter().write(((String) o.object).toString());
+                        	}
+                        	System.out.println("doGet: term is cached so getting item from the cache");
+                        }
                 } catch (Exception e) {
                         System.err.println(e.getMessage());
                 }

@@ -16,6 +16,7 @@ import com.cache.CachedObject;
 import com.dao.DataDao;
 import com.google.gson.Gson;
 import com.vo.AddressVO;
+import com.vo.ResultVO;
 
 public class Controller extends HttpServlet {
         private static final long serialVersionUID = 1L;
@@ -31,11 +32,11 @@ public class Controller extends HttpServlet {
                         if(cObject == null){
                         	System.out.println("doGet: cache null : Querying and  begin caching");
                         	 DataDao dataDao = new DataDao();
-                             List <String> addressVOList = dataDao.getFrameWork(term);
-                             String searchList = new Gson().toJson(addressVOList);
-                             cacheManagerTestProgram1.getCacheObject(term,searchList);
+                        	 ResultVO rVo = dataDao.getFrameWork(term);
+                             String searchedJson = new Gson().toJson(rVo);
+                             cacheManagerTestProgram1.getCacheObject(term,searchedJson);
                              System.out.println("doGet: end caching");
-                             response.getWriter().write(searchList);
+                             response.getWriter().write(searchedJson);
                         }else{
                         	/* Try to retrieve the object from the cache! */
                         	CachedObject o = (CachedObject) CacheManager.getCache(term);

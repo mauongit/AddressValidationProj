@@ -1,1 +1,11 @@
 language: java
+services:
+ - mysql
+ deploy:
+   edge: true
+   provider: cloudfoundry
+   username: neha.d.daga@gmail.com
+   password: verizon@2015
+   api: https://api.run.pivotal.io
+   organization: Hackathon
+   space: staging

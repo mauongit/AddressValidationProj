@@ -15,6 +15,13 @@
     <pathelement location="${build}/main"/>
     <pathelement location="${build}/test"/>
   </path>
+  
+  <path id="build.classpath">
+  <fileset dir="lib">
+    <include name="**/*.jar"/>
+    <include name="**/*.zip"/>
+  </fileset>
+</path>
  
   <target name="init">
     <tstamp/>
